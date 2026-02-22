@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dftcyr4ygp5c7"]
+
+[ext_resource type="Script" uid="uid://63jtctbcjew5" path="res://main.gd" id="1_0xm2m"]
+
+[sub_resource type="Environment" id="Environment_0xm2m"]
+background_mode = 1
+background_color = Color(0.06879827, 0.06879828, 0.06879828, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.35906926, 0.35906908, 0.35906896, 1)
+
+[node name="Main" type="Node3D" unique_id=2042100983]
+script = ExtResource("1_0xm2m")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=843177067]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 1, 2.5)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=860573225]
+environment = SubResource("Environment_0xm2m")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=956408561]
+transform = Transform3D(0.9238795, 0.3314136, -0.19134171, 0, 0.49999997, 0.86602545, 0.38268346, -0.8001032, 0.46193972, 0, 0, 0)

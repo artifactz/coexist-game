@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://hgsaa6ki7bp2"]
+
+[ext_resource type="Script" uid="uid://brmkytwkw6td1" path="res://cube_3x3x3.gd" id="1_5oapa"]
+
+[node name="Cube3x3x3" type="Node3D" unique_id=127168478]
+script = ExtResource("1_5oapa")
+sub_cube_size = 0.32
