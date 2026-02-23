@@ -24,6 +24,16 @@ func _ready() -> void:
 	var colors = ["#117733", "#DDCC77", "#CC6677"]
 	for i in 3:
 		var solution_layout = CubeGenerator.invert_layout(layout)
+		if i > 0:
+			var n_true = randi() % 3
+			var n_false
+			if n_true == 0:
+				n_false = 1 + randi() % 2
+			elif n_true == 2:
+				n_false = randi() % 2
+			else:
+				n_false = randi() % 3
+			CubeGenerator.mutate_layout(solution_layout, n_true, n_false)
 		var cube = CubeScene.instantiate()
 		cube.layout = solution_layout
 		cube.color = colors[i]
@@ -68,7 +78,7 @@ func _input(event: InputEvent):
 	elif event is InputEventMouseMotion and is_mouse_pressed:
 		var delta = event.position - last_mouse_position
 		last_mouse_position = event.position
-		
+
 		if rotate_mode == RotateMode.MainCube:
 			main_cube.rotate_y(delta.x * 0.01)
 			main_cube.rotate_x(delta.y * 0.01)
