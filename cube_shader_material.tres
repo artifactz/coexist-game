@@ -1,0 +1,72 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b37t8j8eugs7h"]
+
+[sub_resource type="Shader" id="Shader_3a2fu"]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_always, cull_disabled, diffuse_burley, specular_schlick_ggx;
+
+uniform vec3 cube_size = vec3(1.0, 1.0, 1.0);
+uniform float radius : hint_range(0.0, 0.5) = 0.1;
+
+uniform vec4 albedo : source_color;
+uniform float point_size : hint_range(0.1, 128.0, 0.1);
+uniform float roughness : hint_range(0.0, 1.0);
+uniform float specular : hint_range(0.0, 1.0, 0.01);
+uniform float metallic : hint_range(0.0, 1.0, 0.01);
+
+varying vec3 model_pos_v;
+
+void vertex() {
+	model_pos_v = VERTEX;
+}
+
+void fragment() {
+	ALBEDO = albedo.rgb;
+	ALPHA *= albedo.a;
+	METALLIC = metallic;
+	SPECULAR = specular;
+	ROUGHNESS = roughness;
+
+	// Convert vertex position to normalized cube space [-1, 1]
+	vec3 local = model_pos_v / (cube_size * 0.5);
+	// Absolute distance from center
+	vec3 p = abs(local);
+	// Distance to each face (in normalized space)
+	float dx = 1.0 - p.x;
+	float dy = 1.0 - p.y;
+	float dz = 1.0 - p.z;
+
+	float edge = 0.0;
+	if (dx < dy && dx < dz) { edge = min(dy, dz); }
+	else if (dy < dx && dy < dz) { edge = min(dx, dz); }
+	else if (dz < dx && dz < dy) { edge = min(dx, dy); }
+
+	vec3 n = NORMAL;
+	if (edge < radius) {
+		// Rounded normal direction
+		vec3 rounded_model = vec3(local);
+		if (p.x < p.y && p.x < p.z) {
+			rounded_model.x = 0.0;
+		} else if (p.y < p.x && p.y < p.z) {
+			rounded_model.y = 0.0;
+		} else if (p.z < p.y && p.z < p.x) {
+			rounded_model.z = 0.0;
+		}
+		rounded_model = normalize(rounded_model);
+		vec3 rounded_view = normalize((VIEW_MATRIX * MODEL_MATRIX * vec4(rounded_model, 0.0)).xyz);
+		float t = clamp(edge / radius, 0.0, 1.0);
+		n = normalize(mix(rounded_view, n, t));
+	}
+	NORMAL = n;
+}
+"
+
+[resource]
+render_priority = 0
+shader = SubResource("Shader_3a2fu")
+shader_parameter/cube_size = Vector3(1, 1, 1)
+shader_parameter/radius = 0.15
+shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 0.35
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0

@@ -1,12 +1,14 @@
 @tool
 extends Node3D
 
+var material = preload("res://cube_shader_material.tres")
+
 @export var sub_cube_size := 0.3
 @export var sub_cube_stride := 0.33333
 @export var refresh := false : set = _refresh
 
 var layout = []
-var color = Color("#4477AA")
+var color = Color("#FF00FFDA")
 
 
 func _refresh(value):
@@ -19,12 +21,9 @@ func _generate():
 		c.queue_free()
 
 	# Create material
-	var mat = StandardMaterial3D.new()
-	#mat.albedo_color = Color(0.25, 0.6, 0.25, 0.75)
-	mat.albedo_color = color
-	mat.roughness = 0.35
-	#mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	#mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var mat: ShaderMaterial = material.duplicate()
+	mat.set_shader_parameter("albedo", color)
+	mat.set_shader_parameter("cube_size", Vector3(sub_cube_size, sub_cube_size, sub_cube_size))
 
 	# Create new cubes
 	for x in 3:

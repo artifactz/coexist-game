@@ -15,13 +15,14 @@ func _ready() -> void:
 	main_cube = CubeScene.instantiate()
 	var layout = CubeGenerator.generate_random_layout()
 	main_cube.layout = layout
+	main_cube.color = Color("#4477AADA")
 	main_cube.position = Vector3(0, 0.75, 0)
 	main_cube.rotate_y(0.25 * PI)
 	main_cube.rotate_x(0.15 * PI)
 	add_child(main_cube)
 
 	var rotations = canonic_rotations()
-	var colors = ["#117733", "#DDCC77", "#CC6677"]
+	var colors = ["#117733DA", "#DDCC77DA", "#CC6677DA"]
 	for i in 3:
 		var solution_layout = CubeGenerator.invert_layout(layout)
 		if i > 0:
@@ -36,7 +37,7 @@ func _ready() -> void:
 			CubeGenerator.mutate_layout(solution_layout, n_true, n_false)
 		var cube = CubeScene.instantiate()
 		cube.layout = solution_layout
-		cube.color = colors[i]
+		cube.color = Color(colors[i])
 		cube.position = Vector3(1.75 * (i - 1), -1, 0)
 		var rotation = rotations.pop_at(randi() % rotations.size())
 		cube.rotate_x(rotation[0])
