@@ -4,4 +4,4 @@
 
 [node name="Cube3x3x3" type="Node3D" unique_id=127168478]
 script = ExtResource("1_5oapa")
-sub_cube_size = 0.32
+sub_cube_size = 0.315

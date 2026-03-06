@@ -19,3 +19,13 @@ environment = SubResource("Environment_0xm2m")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=956408561]
 transform = Transform3D(0.9238795, 0.3314136, -0.19134171, 0, 0.49999997, 0.86602545, 0.38268346, -0.8001032, 0.46193972, 0, 0, 0)
+
+[node name="UserInterface" type="Control" parent="." unique_id=1171349409]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Line2D" type="Line2D" parent="UserInterface" unique_id=866289744]
+closed = true
+default_color = Color(1, 1, 0.8, 1)
