@@ -7,3 +7,4 @@ var solution_index = -1
 
 func _init(index: int):
 	solution_index = index
+	add_to_group("selectable")

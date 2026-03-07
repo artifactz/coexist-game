@@ -8,10 +8,9 @@ var material = preload("res://cube_shader_material.tres")
 @export var sub_cube_stride := 0.33333
 @export var refresh := false : set = _refresh
 
-var layout = []
 var color = Color("#FF00FFDA")
 var solution_index = -1
-var root: Node3D = self  # changes if selectable
+var root: Node3D = self  # changes to ClickableSolution (StaticBody3D) if selectable
 
 
 func _refresh(_value):
@@ -26,7 +25,6 @@ func _generate():
 	# Create collision parent and collider shape
 	if solution_index > -1:
 		root = ClickableSolution.new(solution_index)
-		root.add_to_group("selectable")
 		add_child(root)
 
 	# Create material
@@ -59,8 +57,7 @@ func _generate():
 		shape.shape = box
 		root.add_child(shape)
 
-
-func set_layout():
+func set_layout(layout: Array):
 	var subcubes = root.get_children()
 	var i = 0
 	for x in 3:
@@ -73,8 +70,6 @@ func set_layout():
 func _ready() -> void:
 	if not Engine.is_editor_hint():
 		_generate()
-		if layout.size() > 0:
-			set_layout()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
