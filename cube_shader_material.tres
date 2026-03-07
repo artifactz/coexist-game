@@ -7,9 +7,11 @@ render_mode blend_mix, depth_draw_always, cull_disabled, diffuse_burley, specula
 uniform vec3 cube_size = vec3(1.0, 1.0, 1.0);
 uniform float radius : hint_range(0.0, 0.5) = 0.1;
 
+/** Lower values mean more curvature. */
+uniform float curvature : hint_range(0.0, 100.0) = 5.0;
+
 uniform vec4 albedo : source_color;
-uniform float point_size : hint_range(0.1, 128.0, 0.1);
-uniform float roughness : hint_range(0.0, 1.0);
+uniform float roughness : hint_range(0.0, 1.0, 0.01);
 uniform float specular : hint_range(0.0, 1.0, 0.01);
 uniform float metallic : hint_range(0.0, 1.0, 0.01);
 
@@ -35,27 +37,55 @@ void fragment() {
 	float dy = 1.0 - p.y;
 	float dz = 1.0 - p.z;
 
-	float edge = 0.0;
-	if (dx < dy && dx < dz) { edge = min(dy, dz); }
-	else if (dy < dx && dy < dz) { edge = min(dx, dz); }
-	else if (dz < dx && dz < dy) { edge = min(dx, dy); }
+	float dist_center_face; // Distance to face center in normalized space
+	float dist_edge; // Distance to edge in normalized space
+	vec3 curve_center; // Sphere center at maximum curvature
+
+	if (dx < dy && dx < dz) {
+		// Left or right face
+		dist_edge = min(dy, dz);
+		dist_center_face = length(local.yz);
+		curve_center = vec3(local.x * (1.0 + curvature), 0.0, 0.0);
+	}
+	else if (dy < dx && dy < dz) {
+		// Top or bottom face
+		dist_edge = min(dx, dz);
+		dist_center_face = length(local.xz);
+		curve_center = vec3(0.0, local.y * (1.0 + curvature), 0.0);
+	}
+	else if (dz < dx && dz < dy) {
+		// Front or back face
+		dist_edge = min(dx, dy);
+		dist_center_face = length(local.xy);
+		curve_center = vec3(0.0, 0.0, local.z * (1.0 + curvature));
+	}
 
 	vec3 n = NORMAL;
-	if (edge < radius) {
+	if (dist_edge < radius) {
 		// Rounded normal direction
-		vec3 rounded_model = vec3(local);
+		vec3 rounded_n = vec3(local);
 		if (p.x < p.y && p.x < p.z) {
-			rounded_model.x = 0.0;
+			rounded_n.x = 0.0;
 		} else if (p.y < p.x && p.y < p.z) {
-			rounded_model.y = 0.0;
+			rounded_n.y = 0.0;
 		} else if (p.z < p.y && p.z < p.x) {
-			rounded_model.z = 0.0;
+			rounded_n.z = 0.0;
 		}
-		rounded_model = normalize(rounded_model);
-		vec3 rounded_view = normalize((VIEW_MATRIX * MODEL_MATRIX * vec4(rounded_model, 0.0)).xyz);
-		float t = clamp(edge / radius, 0.0, 1.0);
-		n = normalize(mix(rounded_view, n, t));
+		rounded_n = normalize(rounded_n);
+		vec3 rounded_n_view = normalize((VIEW_MATRIX * MODEL_MATRIX * vec4(rounded_n, 0.0)).xyz);
+		float t = clamp(dist_edge / radius, 0.0, 1.0);
+		n = normalize(mix(rounded_n_view, n, t));
 	}
+
+	// Curved normal direction
+	vec3 curved_n = normalize(curve_center - local);
+	vec3 curved_n_view = normalize((VIEW_MATRIX * MODEL_MATRIX * vec4(curved_n, 0.0)).xyz);
+	if (dot(curved_n_view, NORMAL) < 0.0) {
+		curved_n_view = -curved_n_view;
+	}
+	float t = clamp(dist_center_face * (1.0 - dist_edge), 0.0, 1.0);
+	n = normalize(mix(curved_n_view, n, t));
+
 	NORMAL = n;
 }
 "
@@ -65,8 +95,8 @@ render_priority = 0
 shader = SubResource("Shader_3a2fu")
 shader_parameter/cube_size = Vector3(1, 1, 1)
 shader_parameter/radius = 0.15
-shader_parameter/albedo = Color(0, 0, 0, 1)
-shader_parameter/point_size = 1.0
+shader_parameter/curvature = 4.00000019
+shader_parameter/albedo = Color(1, 0, 1, 1)
 shader_parameter/roughness = 0.35
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
