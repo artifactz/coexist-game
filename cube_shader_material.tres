@@ -11,6 +11,7 @@ uniform float radius : hint_range(0.0, 0.5) = 0.1;
 uniform float curvature : hint_range(0.0, 100.0) = 5.0;
 
 uniform vec4 albedo : source_color;
+uniform vec4 emission : source_color;
 uniform float roughness : hint_range(0.0, 1.0, 0.01);
 uniform float specular : hint_range(0.0, 1.0, 0.01);
 uniform float metallic : hint_range(0.0, 1.0, 0.01);
@@ -24,6 +25,7 @@ void vertex() {
 void fragment() {
 	ALBEDO = albedo.rgb;
 	ALPHA *= albedo.a;
+	EMISSION = emission.a * emission.rgb;
 	METALLIC = metallic;
 	SPECULAR = specular;
 	ROUGHNESS = roughness;
@@ -97,6 +99,7 @@ shader_parameter/cube_size = Vector3(1, 1, 1)
 shader_parameter/radius = 0.15
 shader_parameter/curvature = 4.00000019
 shader_parameter/albedo = Color(1, 0, 1, 1)
+shader_parameter/emission = Color(0, 0, 0, 1)
 shader_parameter/roughness = 0.35
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0

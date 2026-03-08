@@ -1,11 +1,20 @@
 class_name SceneController
 
+const SELECTION_ACTIVATE_SECONDS = 0.2
+const SELECTION_DEACTIVATE_SECONDS = 0.2
+
 static var CubeScene = preload("res://cube_3x3x3.tscn")
+
+enum TransitionDirection { Activating, Deactivating }
 
 var scene: Node3D
 var camera: Camera3D
 var main_cube: Cube3x3x3 = null
-var solution_cubes: Array[Cube3x3x3] = []
+var solution_cubes: Array[Cube3x3x3] = []  ## Solution slots.
+var selection_lights: Array[SpotLight3D] = []  ## Selection spotlight per slot.
+var selection_transitions: Array[float] = []  ## Selection transition state [0..1] per slot.
+var selection_transition_directions: Array[TransitionDirection] = []  ## Transition direction per slot.
+var selection_index: int = -1
 
 func _init(scene: Node3D):
 	self.scene = scene
@@ -14,6 +23,43 @@ func _init(scene: Node3D):
 	self.camera = nodes[i]
 	_setup_scene()
 	reset_scene()
+
+## Handles transitions of emission colors and light intensities.
+func _process(delta: float) -> void:
+	for i in selection_lights.size():
+		var update = false
+		if i == selection_index:
+			if selection_transitions[i] == 0.0:
+				update = true
+				selection_lights[i].visible = true
+			selection_transition_directions[i] = TransitionDirection.Activating
+			if selection_transitions[i] < 1.0:
+				selection_transitions[i] += delta / SELECTION_ACTIVATE_SECONDS
+				selection_transitions[i] = min(1.0, selection_transitions[i])
+				update = true
+		else:
+			selection_transition_directions[i] = TransitionDirection.Deactivating
+			if selection_transitions[i] > 0.0:
+				selection_transitions[i] -= delta / SELECTION_DEACTIVATE_SECONDS
+				if selection_transitions[i] <= 0.0:
+					selection_transitions[i] = 0.0
+					selection_lights[i].visible = false
+				update = true
+
+		if update:
+			var t = selection_transitions[i]
+
+			# Ease-out
+			if selection_transition_directions[i] == TransitionDirection.Activating:
+				t = sqrt(t)
+			else:
+				t = t * t
+
+			solution_cubes[i].set_emission_intensity(t)
+			selection_lights[i].light_energy = t
+
+func select_solution(index: int):
+	selection_index = index
 
 ## Rotates the main cube given a mouse offset.
 func rotate_puzzle_from_mouse(offset: Vector2):
@@ -43,10 +89,18 @@ func reset_scene():
 func _setup_scene():
 	main_cube = _create_cube(Color("#4477AADA"), Vector3(0, 0.75, 0))
 
-	var colors = ["#117733DA", "#DDCC77DA", "#CC6677DA"]
+	var colors = [Color("#117733DA"), Color("#DDCC77DA"), Color("#CC6677DA")]
+	var emissions = [Color("#003314FF"), Color("#473F17FF"), Color("#571816FF")]
 	for i in 3:
-		var cube = _create_cube(Color(colors[i]), Vector3(1.75 * (i - 1), -1, 0), i)
+		var x = 1.75 * (i - 1)
+		var cube = _create_cube(colors[i], Vector3(x, -1, 0), i)
+		cube.emission = emissions[i]
 		solution_cubes.push_back(cube)
+
+		var light = _create_spotlight(Vector3(x, 0, 0))
+		selection_lights.push_back(light)
+		selection_transitions.push_back(0.0)
+		selection_transition_directions.push_back(TransitionDirection.Activating)
 
 ## Creates a cube instance and adds it to the scene.
 func _create_cube(color: Color, position: Vector3, solution_index: int = -1) -> Cube3x3x3:
@@ -56,6 +110,15 @@ func _create_cube(color: Color, position: Vector3, solution_index: int = -1) -> 
 	cube.solution_index = solution_index
 	scene.add_child(cube)
 	return cube
+
+## Creates a spotlight instance and adds it to the scene.
+func _create_spotlight(position: Vector3) -> SpotLight3D:
+	var light = SpotLight3D.new()
+	light.position = position
+	light.rotation.x = -0.5 * PI
+	light.visible = false
+	scene.add_child(light)
+	return light
 
 ## Returns all permutations of [-0.5 PI, 0, 0.5 PI]³ except [0, 0, 0]
 static func _canonic_rotations() -> Array:

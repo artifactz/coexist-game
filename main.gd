@@ -2,6 +2,7 @@ extends Node3D
 
 var game: Game = Game.new()
 var scene_controller: SceneController
+var ui_controller: UIController
 var is_mouse_pressed = false
 var is_mouse_dragged = false
 enum RotateMode { MainCube, SolutionCubes }
@@ -19,9 +20,15 @@ func _ready() -> void:
 	scene_controller = SceneController.new(self)
 	scene_controller.set_layouts(game.layout, game.solutions)
 
+	ui_controller = UIController.new(
+		scene_controller,
+		$UserInterface/SelectionLine2D,
+		$UserInterface/ConfirmButton
+	)
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	scene_controller._process(delta)
 
 func _input(event: InputEvent):
 	if event is InputEventMouseButton:
@@ -70,23 +77,8 @@ func on_confirm_clicked():
 
 func select_solution(index: int):
 	game.selection_index = index
-
-	if index == -1:
-		$UserInterface/Line2D.points = PackedVector2Array()
-		$UserInterface/ConfirmButton.disabled = true
-		return
-
-	var size = 0.8
-	var dy = 0.1
-	var dz = 0.3333
-	var center = scene_controller.solution_cubes[index].global_position
-	$UserInterface/Line2D.points = PackedVector2Array([
-		$Camera3D.unproject_position(center + Vector3(-size, size + dy, dz)),
-		$Camera3D.unproject_position(center + Vector3(size, size + dy, dz)),
-		$Camera3D.unproject_position(center + Vector3(size, -size + dy, dz)),
-		$Camera3D.unproject_position(center + Vector3(-size, -size + dy, dz)),
-	])
-	$UserInterface/ConfirmButton.disabled = false
+	scene_controller.select_solution(index)
+	ui_controller.select_solution(index)
 
 func update_scores():
 	$UserInterface/CorrectLabel.text = "Correct: %s" % game.n_correct

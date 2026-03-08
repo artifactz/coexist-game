@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dftcyr4ygp5c7"]
 
 [ext_resource type="Script" uid="uid://63jtctbcjew5" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://b0p08xlqiuptg" path="res://selection_line_2d.gd" id="2_0xm2m"]
 
 [sub_resource type="Environment" id="Environment_0xm2m"]
 background_mode = 1
@@ -28,9 +29,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Line2D" type="Line2D" parent="UserInterface" unique_id=866289744]
+[node name="SelectionLine2D" type="Line2D" parent="UserInterface" unique_id=866289744]
 closed = true
 default_color = Color(0.4, 0.7019608, 1, 0.6)
+script = ExtResource("2_0xm2m")
 
 [node name="ConfirmButton" type="Button" parent="UserInterface" unique_id=1331409262]
 layout_mode = 1
