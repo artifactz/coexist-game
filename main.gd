@@ -10,14 +10,14 @@ var rotate_mode: RotateMode
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$Camera3D.look_at(Vector3(0, 0, 0))
+	$SubViewportContainer/SubViewport/Node/Camera3D.look_at(Vector3(0, 0, 0))
 	$UserInterface/ConfirmButton.disabled = true
 	$UserInterface/ConfirmButton.pressed.connect(on_confirm_clicked)
 
 	game.scores_updated.connect(update_scores)
 	game.setup_round()
 
-	scene_controller = SceneController.new(self)
+	scene_controller = SceneController.new($SubViewportContainer/SubViewport/Node)
 	scene_controller.set_layouts(game.layout, game.solutions)
 
 	ui_controller = UIController.new(
@@ -58,12 +58,12 @@ func _input(event: InputEvent):
 
 func get_mouse_collision():
 	var mouse_pos = get_viewport().get_mouse_position()
-	var origin = $Camera3D.project_ray_origin(mouse_pos)
-	var dir = $Camera3D.project_ray_normal(mouse_pos)
+	var origin = $SubViewportContainer/SubViewport/Node/Camera3D.project_ray_origin(mouse_pos)
+	var dir = $SubViewportContainer/SubViewport/Node/Camera3D.project_ray_normal(mouse_pos)
 	var end = origin + dir * 100.0
 
 	var params = PhysicsRayQueryParameters3D.create(origin, end)
-	var result = get_world_3d().direct_space_state.intersect_ray(params)
+	var result = $SubViewportContainer/SubViewport.find_world_3d().direct_space_state.intersect_ray(params)
 
 	if result:
 		return result.get("collider")
