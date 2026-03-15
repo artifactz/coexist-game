@@ -8,15 +8,12 @@ extends Node3D
 const CAMERA_SPEED = 0.08
 const CAMERA_SPIRAL_RADIUS = 0.33
 const CAMERA_SPIRAL_SPEED = 0.026109
-const CAMERA_ROLL_MAGNITUDE = 0.015625 * PI
-const CAMERA_ROLL_SPEED = 0.020183
+const CAMERA_ROLL_MAGNITUDE = 0.014625 * PI
+const CAMERA_ROLL_SPEED = 0.015983
 const W = 20
 const H = 20
 const D = 40
 const TUNNEL_SIZE = 10
-
-var mesh := BoxMesh.new()
-var mesh_instances = []
 
 ## Last two slices of a 3D grid storing along which axes (x, y, z) to put cube edges.
 var edges = []
@@ -25,7 +22,6 @@ var camera_spiral_t: float = 0.0
 var camera_roll_t: float = 0.25
 
 func _ready() -> void:
-	mesh.size = Vector3(1.0, 0.02, 0.02)
 	edges = [
 		_create_array2d(H + 1, W + 1, func (): return PackedByteArray([0, 0, 0])),
 		_create_array2d(H + 1, W + 1, func (): return PackedByteArray([0, 0, 0]))
@@ -73,18 +69,16 @@ func add_slice(z: float):
 				for ax in 3:
 					if cell_edges[ax] != 1:
 						continue
-					var mesh_instance = MeshInstance3D.new()
-					mesh_instance.mesh = mesh
+
+					var t: Transform3D
 					if ax == 0:
-						mesh_instance.position = Vector3(x + 0.5 - 0.5 * W, -y + 0.5 * H, -z - slice_index)
+						t = Transform3D(Basis(), Vector3(x + 0.5 - 0.5 * W, -y + 0.5 * H, -z - slice_index))
 					elif ax == 1:
-						mesh_instance.rotate_z(0.5 * PI)
-						mesh_instance.position = Vector3(x - 0.5 * W, -y - 0.5 + 0.5 * H, -z - slice_index)
+						t = Transform3D(Basis(Vector3.BACK, 0.5 * PI), Vector3(x - 0.5 * W, -y - 0.5 + 0.5 * H, -z - slice_index))
 					else:
-						mesh_instance.rotate_y(0.5 * PI)
-						mesh_instance.position = Vector3(x - 0.5 * W, -y + 0.5 * H, -z - 0.5 - slice_index)
-					mesh_instances.push_back(mesh_instance)
-					add_child(mesh_instance)
+						t = Transform3D(Basis(Vector3.UP, 0.5 * PI), Vector3(x - 0.5 * W, -y + 0.5 * H, -z - 0.5 - slice_index))
+					$MultiMeshInstance3D.add_instance(t)
+
 					cell_edges[ax] = 2
 
 func _process(delta: float) -> void:
@@ -99,15 +93,10 @@ func _process(delta: float) -> void:
 
 	# Camera forward movement
 	$Camera3D.position.z -= CAMERA_SPEED * delta
-	if $Camera3D.position.z < -1.0:
+	if $Camera3D.position.z <= -1.0:
 		# Moved one unit -- remove old geometry in the back and add new geometry in the front
-		$Camera3D.position.z = 0.0
-		for mesh_instance in mesh_instances:
-			if mesh_instance.position.z >= 0.0:
-				mesh_instance.queue_free()
-			else:
-				mesh_instance.position.z += 1.0
-		mesh_instances = mesh_instances.filter(func (m): return not m.is_queued_for_deletion())
+		$Camera3D.position.z += 1.0
+		$MultiMeshInstance3D.step()
 		add_slice(D - 1)
 
 func _create_array2d(rows: int, cols: int, initializer: Callable) -> Array:

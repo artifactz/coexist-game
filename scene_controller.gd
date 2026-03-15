@@ -85,8 +85,12 @@ func reset_scene():
 	for i in 3:
 		_set_euler_zyx(solution_cubes[i], rotations.pop_at(randi() % rotations.size()))
 
-## Creates and assigns cubes.
 func _setup_scene():
+	_setup_camera()
+	_setup_cubes()
+
+## Creates and assigns cubes.
+func _setup_cubes():
 	main_cube = _create_cube(Color("#4477AADA"), Vector3(0, 0.75, 0))
 
 	var colors = [Color("#117733DA"), Color("#DDCC77DA"), Color("#CC6677DA")]
@@ -101,6 +105,9 @@ func _setup_scene():
 		selection_lights.push_back(light)
 		selection_transitions.push_back(0.0)
 		selection_transition_directions.push_back(TransitionDirection.Activating)
+
+func _setup_camera():
+	camera.look_at(Vector3(0, 0, 0))
 
 ## Creates a cube instance and adds it to the scene.
 func _create_cube(color: Color, position: Vector3, solution_index: int = -1) -> Cube3x3x3:

@@ -3,13 +3,14 @@
 [ext_resource type="Script" uid="uid://63jtctbcjew5" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://b0p08xlqiuptg" path="res://selection_line_2d.gd" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://dihdgkwkai30f" path="res://background_viewport_node.gd" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://bas6u8db3gk3l" path="res://auto_aspect_camera3d.gd" id="3_1bvp3"]
+[ext_resource type="Script" uid="uid://dpnkracgibk1d" path="res://background_multi_mesh_instance_3d.gd" id="4_lquwl"]
 
 [sub_resource type="Environment" id="Environment_0xm2m"]
 background_mode = 1
 background_color = Color(0.06879827, 0.06879828, 0.06879828, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.21176471, 0.21176471, 0.21176471, 1)
-fog_enabled = true
+ambient_light_color = Color(0.3328807, 0.33288068, 0.33288068, 1)
 fog_mode = 1
 fog_light_color = Color(0.07058824, 0.07058824, 0.07058824, 1)
 fog_density = 1.0
@@ -45,7 +46,13 @@ environment = SubResource("Environment_0xm2m")
 [node name="Node" type="Node3D" parent="SubViewportContainer/BackgroundSubViewport" unique_id=739107655]
 script = ExtResource("2_h2yge")
 
-[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/BackgroundSubViewport/Node" unique_id=1188231513]
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/BackgroundSubViewport/Node" unique_id=1833074140]
+far = 400.0
+script = ExtResource("3_1bvp3")
+metadata/_custom_type_script = "uid://bas6u8db3gk3l"
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="SubViewportContainer/BackgroundSubViewport/Node" unique_id=55065394]
+script = ExtResource("4_lquwl")
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=372436183]
 own_world_3d = true
@@ -60,11 +67,14 @@ environment = SubResource("Environment_h2yge")
 
 [node name="Node" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=943061144]
 
-[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/Node" unique_id=843177067]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2.5)
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/Node" unique_id=956408561]
 transform = Transform3D(0.9238795, 0.33141363, -0.19134171, 0, 0.49999997, 0.86602545, 0.38268346, -0.8001032, 0.46193972, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/Node" unique_id=1495059360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 3.125)
+far = 400.0
+script = ExtResource("3_1bvp3")
+metadata/_custom_type_script = "uid://bas6u8db3gk3l"
 
 [node name="UserInterface" type="Control" parent="." unique_id=1171349409]
 layout_mode = 3

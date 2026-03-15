@@ -10,9 +10,9 @@ var rotate_mode: RotateMode
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$SubViewportContainer/SubViewport/Node/Camera3D.look_at(Vector3(0, 0, 0))
-	$UserInterface/ConfirmButton.disabled = true
-	$UserInterface/ConfirmButton.pressed.connect(on_confirm_clicked)
+	var confirm_button = $UserInterface/ConfirmButton
+	confirm_button.disabled = true
+	confirm_button.pressed.connect(on_confirm_clicked)
 
 	game.scores_updated.connect(update_scores)
 	game.setup_round()
@@ -23,7 +23,7 @@ func _ready() -> void:
 	ui_controller = UIController.new(
 		scene_controller,
 		$UserInterface/SelectionLine2D,
-		$UserInterface/ConfirmButton
+		confirm_button
 	)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
