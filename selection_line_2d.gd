@@ -1,43 +1,52 @@
 class_name SelectionLine2D
 extends Line2D
 
-const ACCELERATION = 800.0;
-const DECAY = 16.0;
-const DAMPENING = 30.0;
-const DIRECT_INITIAL_SPEED = 20.0;
-const RANDOM_INITIAL_SPEED = 1750.0;
+const RANDOMNESS = 0.5
+const ANIMATION_DURATION = 0.3
 
 var targets: Array[Vector2]
+var origins: Array[Vector2]
 var velocities: Array[Vector2]
+var animation_t: float
 
 ## Animates points towards targets.
 func _process(delta: float) -> void:
 	if not targets:
 		return
+
+	# Set line width relative to viewport size
+	var viewport_size = get_viewport().size
+	width = min(viewport_size.x, viewport_size.y) / 55.0
+
+	animation_t += delta
+
 	for i in points.size():
-		var error = targets[i] - points[i]
-		var error_length = error.length()
-		if error_length < 1.0 and velocities[i].length_squared() < 4.0:
-			continue
+		var noisy_target = origins[i] + ANIMATION_DURATION * velocities[i]
+		var t = clamp(animation_t / ANIMATION_DURATION, 0.0, 1.0)
+		t = sqrt(t)  # Ease-out
+		var p = origins[i].lerp(noisy_target, t)
+		points[i] = p.lerp(targets[i], t)
 
-		#velocities[i] *= pow(0.00005, delta)
-		velocities[i] *= 1.0 - DECAY * delta
-
-		# Only apply dampening when we're moving away from target
-		var err_length_diff = (error - delta * velocities[i]).length() - error_length
-		if err_length_diff > 0.0:
-			velocities[i] *= 1.0 - DAMPENING * delta
-
-		velocities[i] += delta * ACCELERATION * sqrt(error.length()) * error.normalized()
-		points[i] += delta * velocities[i]
+	if animation_t >= ANIMATION_DURATION:
+		targets = []
 
 func set_targets(targets: Array[Vector2]) -> void:
-	# Initial velocities consist of vector towards targets and noise
+	var viewport_size = get_viewport().size
+	var viewport_scale = min(viewport_size.x, viewport_size.y)
+	var randomness_scale = viewport_scale * RANDOMNESS
+
+	origins.clear()
 	velocities.clear()
 	for i in targets.size():
-		var velocity = DIRECT_INITIAL_SPEED * (targets[i] - points[i])
-		velocity.x += RANDOM_INITIAL_SPEED * (2.0 * randf() - 1.0) * (2.0 * randf() - 1.0)
-		velocity.y += RANDOM_INITIAL_SPEED * (2.0 * randf() - 1.0) * (2.0 * randf() - 1.0)
+		# Store origin
+		origins.push_back(points[i])
+
+		# Calculate noisy velocity towards target
+		var relative = targets[i] - points[i]
+		var velocity = relative / ANIMATION_DURATION
+		velocity.x += randomness_scale * (2.0 * randf() - 1.0) * (2.0 * randf() - 1.0)
+		velocity.y += randomness_scale * (2.0 * randf() - 1.0) * (2.0 * randf() - 1.0)
 		velocities.push_back(velocity)
 
 	self.targets = targets
+	animation_t = 0.0

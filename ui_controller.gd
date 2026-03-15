@@ -29,7 +29,7 @@ func select_solution(index: int):
 	if not selection_line.points:
 		# Initialize 1st selection points as noisy targets
 		var points = targets.duplicate()
-		_randomize_vec2_array(points, 100)
+		_randomize_vec2_array(points, 75.0)
 		selection_line.points = PackedVector2Array(points)
 
 	# Set animation targets

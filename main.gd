@@ -1,16 +1,19 @@
 extends Node3D
 
+const DRAG_DEADZONE = 2.0
+
 var game: Game = Game.new()
 var scene_controller: SceneController
 var ui_controller: UIController
 var is_mouse_pressed = false
 var is_mouse_dragged = false
+var drag_distance = 0.0
 enum RotateMode { MainCube, SolutionCubes }
 var rotate_mode: RotateMode
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var confirm_button = $UserInterface/ConfirmButton
+	var confirm_button = $UserInterface/MarginContainer/VBoxContainer/CenterContainer/ConfirmButton
 	confirm_button.disabled = true
 	confirm_button.pressed.connect(on_confirm_clicked)
 
@@ -31,23 +34,32 @@ func _process(delta: float) -> void:
 	scene_controller._process(delta)
 
 func _input(event: InputEvent):
-	if event is InputEventMouseButton:
+	if event.device == -1:
+		# Ignore duplicate mouse events emulated from touch events
+		# ("Emulate Mouse From Touch" is needed for buttons to work on mobile)
+		return
+
+	if event is InputEventMouseButton or event is InputEventScreenTouch:
 		if event.is_pressed():
-			var mouse_position = get_viewport().get_mouse_position()
 			var viewport_size = get_viewport().size
 			var half_height = viewport_size.y / 2
-			rotate_mode = RotateMode.MainCube if mouse_position.y < half_height else RotateMode.SolutionCubes
+			rotate_mode = RotateMode.MainCube if event.position.y < half_height else RotateMode.SolutionCubes
 		elif not is_mouse_dragged:
 			var collider = get_mouse_collision()
 			if collider and collider.is_in_group("selectable"):
 				select_solution(collider.solution_index)
 
 		is_mouse_dragged = false
+		drag_distance = 0.0
 		is_mouse_pressed = event.is_pressed()
 
-	elif event is InputEventMouseMotion and is_mouse_pressed:
+	elif (event is InputEventMouseMotion or event is InputEventScreenDrag) and is_mouse_pressed:
+		drag_distance += event.screen_relative.length()
+		if drag_distance < DRAG_DEADZONE:
+			return
+
 		var viewport_size = get_viewport().size
-		var input_scale = 12.0 / viewport_size.x
+		var input_scale = 7.5 / min(viewport_size.x, viewport_size.y)
 
 		if rotate_mode == RotateMode.MainCube:
 			scene_controller.rotate_puzzle_from_mouse(input_scale * event.screen_relative)

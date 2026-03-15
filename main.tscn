@@ -2,9 +2,12 @@
 
 [ext_resource type="Script" uid="uid://63jtctbcjew5" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://b0p08xlqiuptg" path="res://selection_line_2d.gd" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://dihdgkwkai30f" path="res://background_viewport_node.gd" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://bahi43wjblgd0" path="res://background_sub_viewport.gd" id="2_272bh"]
+[ext_resource type="Script" uid="uid://dihdgkwkai30f" path="res://background_node.gd" id="2_h2yge"]
 [ext_resource type="Script" uid="uid://bas6u8db3gk3l" path="res://auto_aspect_camera3d.gd" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://dpnkracgibk1d" path="res://background_multi_mesh_instance_3d.gd" id="4_lquwl"]
+[ext_resource type="Theme" uid="uid://3fcptq23yvq" path="res://main_theme.tres" id="5_7mycd"]
+[ext_resource type="Script" uid="uid://cal5b0dssaqfw" path="res://user_interface.gd" id="7_5vw27"]
 
 [sub_resource type="Environment" id="Environment_0xm2m"]
 background_mode = 1
@@ -39,6 +42,7 @@ msaa_3d = 2
 anisotropic_filtering_level = 0
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
+script = ExtResource("2_272bh")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/BackgroundSubViewport" unique_id=860573225]
 environment = SubResource("Environment_0xm2m")
@@ -83,26 +87,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("5_7mycd")
+script = ExtResource("7_5vw27")
 
 [node name="SelectionLine2D" type="Line2D" parent="UserInterface" unique_id=866289744]
 closed = true
 default_color = Color(0.4, 0.7019608, 1, 0.6)
 script = ExtResource("2_0xm2m")
-
-[node name="ConfirmButton" type="Button" parent="UserInterface" unique_id=1331409262]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -35.5
-offset_top = -51.0
-offset_right = 35.5
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Confirm"
 
 [node name="CorrectLabel" type="Label" parent="UserInterface" unique_id=117553591]
 layout_mode = 1
@@ -119,3 +110,23 @@ offset_left = 20.0
 offset_top = 60.0
 offset_right = 60.0
 offset_bottom = 83.0
+
+[node name="MarginContainer" type="MarginContainer" parent="UserInterface" unique_id=1201820883]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UserInterface/MarginContainer" unique_id=1716374491]
+layout_mode = 2
+alignment = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="UserInterface/MarginContainer/VBoxContainer" unique_id=817956505]
+layout_mode = 2
+
+[node name="ConfirmButton" type="Button" parent="UserInterface/MarginContainer/VBoxContainer/CenterContainer" unique_id=1331409262]
+layout_mode = 2
+text = "Confirm"

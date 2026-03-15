@@ -91,13 +91,13 @@ func _setup_scene():
 
 ## Creates and assigns cubes.
 func _setup_cubes():
-	main_cube = _create_cube(Color("#4477AADA"), Vector3(0, 0.75, 0))
+	main_cube = _create_cube(Color("#4477AADA"), Vector3(0, 1.0, 0))
 
 	var colors = [Color("#117733DA"), Color("#DDCC77DA"), Color("#CC6677DA")]
 	var emissions = [Color("#003314FF"), Color("#473F17FF"), Color("#571816FF")]
 	for i in 3:
 		var x = 1.75 * (i - 1)
-		var cube = _create_cube(colors[i], Vector3(x, -1, 0), i)
+		var cube = _create_cube(colors[i], Vector3(x, -1.15, 0), i)
 		cube.emission = emissions[i]
 		solution_cubes.push_back(cube)
 
