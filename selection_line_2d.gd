@@ -16,7 +16,7 @@ func _process(delta: float) -> void:
 
 	# Set line width relative to viewport size
 	var viewport_size = get_viewport().size
-	width = min(viewport_size.x, viewport_size.y) / 55.0
+	width = min(viewport_size.x, viewport_size.y) / 70.0
 
 	animation_t += delta
 

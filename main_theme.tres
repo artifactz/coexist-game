@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://3fcptq23yvq"]
 
-[ext_resource type="FontFile" uid="uid://ccifom0p3h2v3" path="res://Orbitron-Bold.ttf" id="1_470mv"]
+[ext_resource type="FontFile" uid="uid://ccifom0p3h2v3" path="res://media/Orbitron-Bold.ttf" id="1_470mv"]
 
 [resource]
 default_font = ExtResource("1_470mv")

@@ -36,7 +36,8 @@ func _process(delta: float) -> void:
 func _input(event: InputEvent):
 	if event.device == -1:
 		# Ignore duplicate mouse events emulated from touch events
-		# ("Emulate Mouse From Touch" is needed for buttons to work on mobile)
+		# ("Emulate Mouse From Touch" is needed for buttons to work on mobile,
+		# see https://github.com/godotengine/godot/issues/24589)
 		return
 
 	if event is InputEventMouseButton or event is InputEventScreenTouch:
