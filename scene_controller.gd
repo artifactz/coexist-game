@@ -3,12 +3,17 @@ class_name SceneController
 const SELECTION_ACTIVATE_SECONDS = 0.2
 const SELECTION_DEACTIVATE_SECONDS = 0.2
 
+## How much rotating the cubes affects background camera roll
+const ROTATION_TO_CAMERA_ROLL_AMOUNT = 3.0
+
 static var CubeScene = preload("res://cube_3x3x3.tscn")
 
 enum TransitionDirection { Activating, Deactivating }
 
 var scene: Node3D
 var camera: Camera3D
+var background_scene: BackgroundNode3D
+var background_multimesh: BackgroundMultiMeshInstance3D
 var main_cube: Cube3x3x3 = null
 var solution_cubes: Array[Cube3x3x3] = []  ## Solution slots.
 var selection_lights: Array[SpotLight3D] = []  ## Selection spotlight per slot.
@@ -16,16 +21,25 @@ var selection_transitions: Array[float] = []  ## Selection transition state [0..
 var selection_transition_directions: Array[TransitionDirection] = []  ## Transition direction per slot.
 var selection_index: int = -1
 
-func _init(scene: Node3D):
+func _init(scene: Node3D, background_scene: BackgroundNode3D):
 	self.scene = scene
 	var nodes = scene.get_children()
 	var i = nodes.find_custom((func (node: Node3D): return node.get_class() == "Camera3D"))
 	self.camera = nodes[i]
+
+	self.background_scene = background_scene
+	nodes = background_scene.get_children()
+	i = nodes.find_custom((func (node: Node3D): return node.get_class() == "MultiMeshInstance3D"))
+	self.background_multimesh = nodes[i]
+
 	_setup_scene()
 	reset_scene()
 
-## Handles transitions of emission colors and light intensities.
 func _process(delta: float) -> void:
+	_update_transitions(delta)
+
+## Handles transitions of emission colors and light intensities.
+func _update_transitions(delta: float) -> void:
 	for i in selection_lights.size():
 		var update = false
 		if i == selection_index:
@@ -60,17 +74,22 @@ func _process(delta: float) -> void:
 
 func select_solution(index: int):
 	selection_index = index
+	if index > -1:
+		var color = solution_cubes[index].color
+		background_multimesh.add_pulse(color, 2)
 
 ## Rotates the main cube given a mouse offset.
 func rotate_puzzle_from_mouse(offset: Vector2):
 	var camera_ray = main_cube.global_position - camera.global_position
 	_rotate_from_mouse(main_cube, camera_ray, offset)
+	background_scene.camera_roll_speed_factor += ROTATION_TO_CAMERA_ROLL_AMOUNT * offset.length()
 
 ## Rotates the solution cubes given a mouse offset.
 func rotate_solutions_from_mouse(offset: Vector2):
 	var common_camera_ray = solution_cubes[1].global_position - camera.global_position
 	for cube in solution_cubes:
 		_rotate_from_mouse(cube, common_camera_ray, offset)
+	background_scene.camera_roll_speed_factor += ROTATION_TO_CAMERA_ROLL_AMOUNT * offset.length()
 
 ## Sets main and solution cube layouts.
 func set_layouts(puzzle: Array, solutions: Array):

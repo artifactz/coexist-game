@@ -4,20 +4,28 @@
 code = "shader_type spatial;
 render_mode depth_draw_always, cull_back, unshaded;
 
-uniform vec3 base_color = vec3(0.25, 0.25, 0.25);
-uniform vec3 fog_color = vec3(0.071, 0.071, 0.071);
-uniform float max_depth = 30.0;
+uniform vec3 base_color : source_color;
+uniform vec3 fog_color : source_color;
+uniform float min_z = -42.0;
+uniform vec3 pulse_color : source_color;
+uniform float pulse_z = -10.0;
+uniform float pulse_size = 3.0;
 
 void fragment() {
-	float depth_r = 1.0 - clamp(-VERTEX.z / max_depth, 0.0, 1.0);
+	float depth_r = 1.0 - clamp(VERTEX.z / min_z, 0.0, 1.0);
 	depth_r *= depth_r;
-	ALBEDO = mix(fog_color, base_color, depth_r);
+	vec3 color = mix(fog_color, base_color, depth_r);
+	color += depth_r * exp(-abs(VERTEX.z - pulse_z) / pulse_size) * pulse_color;
+	ALBEDO = color;
 }
 "
 
 [resource]
 render_priority = 0
 shader = SubResource("Shader_ulksf")
-shader_parameter/base_color = Vector3(0.25, 0.25, 0.25)
-shader_parameter/fog_color = Vector3(0.071, 0.071, 0.071)
-shader_parameter/max_depth = 40.0
+shader_parameter/base_color = Color(0.22670749, 0.22670752, 0.22670743, 1)
+shader_parameter/fog_color = Color(0.07058824, 0.07058824, 0.07058824, 1)
+shader_parameter/min_z = -42.0
+shader_parameter/pulse_color = Color(0, 0, 0, 1)
+shader_parameter/pulse_z = -10.0
+shader_parameter/pulse_size = 3.0

@@ -1,4 +1,5 @@
 extends Node3D
+class_name BackgroundNode3D
 ## Randomly places a whole bunch of cubes on a 3D grid (with a hole/tunnel in the center),
 ## instantiates 12 meshes per cube representing its edges, retaining information about which
 ## edges need to be instantiated and which already are, for the last two layers of the 3D grid.
@@ -10,6 +11,8 @@ const CAMERA_SPIRAL_RADIUS = 0.33
 const CAMERA_SPIRAL_SPEED = 0.026109
 const CAMERA_ROLL_MAGNITUDE = 0.014625 * PI
 const CAMERA_ROLL_SPEED = 0.015983
+const CAMERA_ROLL_SPEED_FACTOR_DECAY = 0.1667
+const MAX_CAMERA_ROLL_SPEED_FACTOR = 9.0
 const W = 20
 const H = 20
 const D = 40
@@ -18,8 +21,9 @@ const TUNNEL_SIZE = 10
 ## Last two slices of a 3D grid storing along which axes (x, y, z) to put cube edges.
 var edges = []
 
-var camera_spiral_t: float = 0.0
-var camera_roll_t: float = 0.25
+var camera_spiral_t := 0.0
+var camera_roll_t := 0.25
+var camera_roll_speed_factor := 1.0
 
 func _ready() -> void:
 	edges = [
@@ -88,8 +92,10 @@ func _process(delta: float) -> void:
 	$Camera3D.position.y = CAMERA_SPIRAL_RADIUS * sin(camera_spiral_t * 2 * PI)
 
 	# Camera roll
-	camera_roll_t = fmod(camera_roll_t + CAMERA_ROLL_SPEED * delta, 1.0)
+	camera_roll_t = fmod(camera_roll_t + (CAMERA_ROLL_SPEED * camera_roll_speed_factor) * delta, 1.0)
 	$Camera3D.rotation.z = CAMERA_ROLL_MAGNITUDE * sin(camera_roll_t * 2 * PI)
+	camera_roll_speed_factor = min(MAX_CAMERA_ROLL_SPEED_FACTOR, camera_roll_speed_factor)
+	camera_roll_speed_factor = 1.0 + (camera_roll_speed_factor - 1.0) * pow(CAMERA_ROLL_SPEED_FACTOR_DECAY, delta)
 
 	# Camera forward movement
 	$Camera3D.position.z -= CAMERA_SPEED * delta

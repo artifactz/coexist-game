@@ -20,7 +20,10 @@ func _ready() -> void:
 	game.scores_updated.connect(update_scores)
 	game.setup_round()
 
-	scene_controller = SceneController.new($SubViewportContainer/SubViewport/Node)
+	scene_controller = SceneController.new(
+		$SubViewportContainer/SubViewport/Node,
+		$SubViewportContainer/BackgroundSubViewport/Node
+	)
 	scene_controller.set_layouts(game.layout, game.solutions)
 
 	ui_controller = UIController.new(
@@ -61,11 +64,12 @@ func _input(event: InputEvent):
 
 		var viewport_size = get_viewport().size
 		var input_scale = 7.5 / min(viewport_size.x, viewport_size.y)
+		var scaled_relative = input_scale * event.screen_relative
 
 		if rotate_mode == RotateMode.MainCube:
-			scene_controller.rotate_puzzle_from_mouse(input_scale * event.screen_relative)
+			scene_controller.rotate_puzzle_from_mouse(scaled_relative)
 		else:
-			scene_controller.rotate_solutions_from_mouse(input_scale * event.screen_relative)
+			scene_controller.rotate_solutions_from_mouse(scaled_relative)
 
 		is_mouse_dragged = true
 
