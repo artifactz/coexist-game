@@ -3,14 +3,28 @@ extends Line2D
 
 const RANDOMNESS = 0.5
 const ANIMATION_DURATION = 0.3
+const FADEOUT_DURATION = 0.4
 
 var targets: Array[Vector2]
 var origins: Array[Vector2]
 var velocities: Array[Vector2]
 var animation_t: float
+var fadeout_t := -1.0
+var original_alpha: float
 
-## Animates points towards targets.
+func _ready() -> void:
+	original_alpha = default_color.a
+
+## Animates fadeout and points towards targets.
 func _process(delta: float) -> void:
+	if fadeout_t >= FADEOUT_DURATION:
+		points = PackedVector2Array()
+		default_color.a = original_alpha
+		fadeout_t = -1.0
+	if fadeout_t >= 0.0:
+		default_color.a = original_alpha * (1.0 - sqrt(fadeout_t / FADEOUT_DURATION))
+		fadeout_t += delta
+
 	if not targets:
 		return
 
@@ -50,3 +64,6 @@ func set_targets(targets: Array[Vector2]) -> void:
 
 	self.targets = targets
 	animation_t = 0.0
+
+func fadeout() -> void:
+	fadeout_t = 0.0

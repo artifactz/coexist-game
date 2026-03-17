@@ -11,7 +11,7 @@ func _init(scene_controller: SceneController, selection_line: SelectionLine2D, c
 
 func select_solution(index: int):
 	if index == -1:
-		selection_line.points = PackedVector2Array()
+		selection_line.fadeout()
 		confirm_button.disabled = true
 		return
 
