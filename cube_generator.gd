@@ -2,14 +2,17 @@ class_name CubeGenerator
 
 ## Returns a 3x3x3 array of bools, all set to true, except of a random connected component
 ## of slots set to false.
-static func generate_random_layout(n_false = 13) -> Array:
+static func generate_random_layout(n_false := 13) -> Array:
 	var layout = _full_layout()
+	if n_false == 0:
+		return layout
+
 	var x = randi() % 3
 	var y = randi() % 3
 	var z = randi() % 3
 	layout[x][y][z] = false
 
-	for _i in n_false:
+	for _i in n_false - 1:
 		_expand(layout, false)
 
 	return layout
