@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://bas6u8db3gk3l" path="res://auto_aspect_camera3d.gd" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://dpnkracgibk1d" path="res://background_multi_mesh_instance_3d.gd" id="4_lquwl"]
 [ext_resource type="Theme" uid="uid://3fcptq23yvq" path="res://main_theme.tres" id="5_7mycd"]
+[ext_resource type="FontFile" uid="uid://ccifom0p3h2v3" path="res://media/Orbitron-Bold.ttf" id="6_kek77"]
+[ext_resource type="Script" uid="uid://c13cfvy1f1ome" path="res://score_label_3d.gd" id="7_4c57u"]
 [ext_resource type="Script" uid="uid://cal5b0dssaqfw" path="res://user_interface.gd" id="7_5vw27"]
 
 [sub_resource type="Environment" id="Environment_0xm2m"]
@@ -80,6 +82,15 @@ far = 400.0
 script = ExtResource("3_1bvp3")
 metadata/_custom_type_script = "uid://bas6u8db3gk3l"
 
+[node name="ScoreLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node" unique_id=139525142]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 1.4, 0)
+pixel_size = 0.003
+text = "Score: 0"
+font = ExtResource("6_kek77")
+font_size = 48
+horizontal_alignment = 2
+script = ExtResource("7_4c57u")
+
 [node name="UserInterface" type="Control" parent="." unique_id=1171349409]
 layout_mode = 3
 anchors_preset = 15
@@ -94,22 +105,6 @@ script = ExtResource("7_5vw27")
 closed = true
 default_color = Color(0.4, 0.7019608, 1, 0.6)
 script = ExtResource("2_0xm2m")
-
-[node name="CorrectLabel" type="Label" parent="UserInterface" unique_id=117553591]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 60.0
-offset_bottom = 43.0
-
-[node name="WrongLabel" type="Label" parent="UserInterface" unique_id=1047489026]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 20.0
-offset_top = 60.0
-offset_right = 60.0
-offset_bottom = 83.0
 
 [node name="MarginContainer" type="MarginContainer" parent="UserInterface" unique_id=1201820883]
 layout_mode = 1

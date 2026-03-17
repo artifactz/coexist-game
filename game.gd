@@ -66,10 +66,10 @@ func confirm():
 		print("difficulty+: ", difficulty_bump)
 		difficulty = clamp(difficulty + difficulty_bump, 0.0, 30.0)
 
+		scores_updated.emit()
+
 	else:
 		n_wrong += 1
 		wrong_streak += 1
 		correct_streak = 0
 		difficulty *= 0.6
-
-	scores_updated.emit()

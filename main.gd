@@ -98,5 +98,4 @@ func select_solution(index: int):
 	ui_controller.select_solution(index)
 
 func update_scores():
-	$UserInterface/CorrectLabel.text = "Correct: %s" % game.n_correct
-	$UserInterface/WrongLabel.text = "Wrong: %s" % game.n_wrong
+	$SubViewportContainer/SubViewport/Node/ScoreLabel3D.set_score(10.0 * game.score)
