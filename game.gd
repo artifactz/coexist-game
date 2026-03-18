@@ -7,7 +7,8 @@ var selection_index = -1
 var round_timestamp: float
 
 var difficulty := 0.0
-var score := 0.0
+var score := 0
+var score_details: ScoreDetails = null
 var n_correct := 0
 var n_wrong := 0
 var correct_streak := 0
@@ -58,12 +59,13 @@ func confirm():
 		n_correct += 1
 		correct_streak += 1
 		wrong_streak = 0
-		var score_bump = pow(1.1, 1.0 + difficulty) * (correct_streak + speed_bonus)
-		print("score+: ", score_bump)
-		score += score_bump
-		var difficulty_bump = 0.333 * correct_streak + speed_bonus
-		print("difficulty+: ", difficulty_bump)
-		difficulty = clamp(difficulty + difficulty_bump, 0.0, 30.0)
+		var difficulty_factor = pow(1.1, 1.0 + difficulty)
+		score_details = ScoreDetails.new(difficulty_factor, correct_streak, speed_bonus)
+		print("+score: ", score_details.score)
+		score += score_details.score
+		var difficulty_gain = 0.333 * correct_streak + speed_bonus
+		print("+difficulty: ", difficulty_gain)
+		difficulty = clamp(difficulty + difficulty_gain, 0.0, 30.0)
 
 	else:
 		n_wrong += 1

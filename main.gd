@@ -106,4 +106,5 @@ func select_solution(index: int):
 	ui_controller.select_solution(index)
 
 func update_score():
-	$SubViewportContainer/SubViewport/Node/ScoreLabel3D.set_score(10.0 * game.score)
+	$SubViewportContainer/SubViewport/Node/ScoreLabel3D.set_score(game.score)
+	$SubViewportContainer/SubViewport/Node/ScoreDetailsNode3D.show_score_details(game.score_details)

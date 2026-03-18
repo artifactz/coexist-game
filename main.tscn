@@ -10,6 +10,7 @@
 [ext_resource type="FontFile" uid="uid://ccifom0p3h2v3" path="res://media/Orbitron-Bold.ttf" id="6_kek77"]
 [ext_resource type="Script" uid="uid://c13cfvy1f1ome" path="res://score_label_3d.gd" id="7_4c57u"]
 [ext_resource type="Script" uid="uid://cal5b0dssaqfw" path="res://user_interface.gd" id="7_5vw27"]
+[ext_resource type="Script" uid="uid://cpaw1qaswp4wf" path="res://score_details_node_3d.gd" id="8_efxa6"]
 
 [sub_resource type="Environment" id="Environment_0xm2m"]
 background_mode = 1
@@ -87,9 +88,61 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 1.4, 0)
 pixel_size = 0.003
 text = "Score: 0"
 font = ExtResource("6_kek77")
-font_size = 48
+font_size = 50
 horizontal_alignment = 2
 script = ExtResource("7_4c57u")
+
+[node name="ScoreDetailsNode3D" type="Node3D" parent="SubViewportContainer/SubViewport/Node" unique_id=581127099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+visible = false
+script = ExtResource("8_efxa6")
+
+[node name="StreakbonusLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node/ScoreDetailsNode3D" unique_id=1296560729]
+pixel_size = 0.003
+text = "streak bonus"
+font = ExtResource("6_kek77")
+font_size = 42
+horizontal_alignment = 2
+
+[node name="StreakbonusValueLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node/ScoreDetailsNode3D" unique_id=1948798433]
+pixel_size = 0.003
+modulate = Color(0.4862745, 1, 0.3529412, 1)
+text = "10"
+font = ExtResource("6_kek77")
+font_size = 42
+horizontal_alignment = 2
+
+[node name="StreakbonusPlusLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node/ScoreDetailsNode3D" unique_id=159010921]
+pixel_size = 0.003
+text = "+"
+font = ExtResource("6_kek77")
+font_size = 42
+horizontal_alignment = 2
+
+[node name="SpeedbonusLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node/ScoreDetailsNode3D" unique_id=1367867883]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+pixel_size = 0.003
+text = "speed bonus"
+font = ExtResource("6_kek77")
+font_size = 42
+horizontal_alignment = 2
+
+[node name="SpeedbonusValueLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node/ScoreDetailsNode3D" unique_id=565725768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+pixel_size = 0.003
+modulate = Color(0.4862745, 1, 0.3529412, 1)
+text = "10"
+font = ExtResource("6_kek77")
+font_size = 42
+horizontal_alignment = 2
+
+[node name="SpeedbonusPlusLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node/ScoreDetailsNode3D" unique_id=2016692157]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+pixel_size = 0.003
+text = "+"
+font = ExtResource("6_kek77")
+font_size = 42
+horizontal_alignment = 2
 
 [node name="UserInterface" type="Control" parent="." unique_id=1171349409]
 layout_mode = 3
