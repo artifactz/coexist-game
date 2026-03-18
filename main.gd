@@ -6,6 +6,7 @@ var game: Game = Game.new()
 var scene_controller: SceneController
 var ui_controller: UIController
 var is_mouse_pressed = false
+var is_emulated_mouse_pressed = false
 var is_mouse_dragged = false
 var drag_distance = 0.0
 enum RotateMode { MainCube, SolutionCubes }
@@ -17,14 +18,16 @@ func _ready() -> void:
 	confirm_button.disabled = true
 	confirm_button.pressed.connect(on_confirm_clicked)
 
-	game.scores_updated.connect(update_scores)
 	game.setup_round()
 
 	scene_controller = SceneController.new(
 		$SubViewportContainer/SubViewport/Node,
 		$SubViewportContainer/BackgroundSubViewport/Node
 	)
+	scene_controller.confirm_finished.connect(on_confirm_animation_end)
+	scene_controller.score_update.connect(update_score)
 	scene_controller.set_layouts(game.layout, game.solutions)
+	scene_controller.fadein_cubes()
 
 	ui_controller = UIController.new(
 		scene_controller,
@@ -37,13 +40,14 @@ func _process(delta: float) -> void:
 	scene_controller._process(delta)
 
 func _input(event: InputEvent):
-	if event.device == -1:
+	if event is InputEventMouseButton and event.device == -1:
 		# Ignore duplicate mouse events emulated from touch events
 		# ("Emulate Mouse From Touch" is needed for buttons to work on mobile,
 		# see https://github.com/godotengine/godot/issues/24589)
+		is_emulated_mouse_pressed = event.is_pressed()
 		return
 
-	if event is InputEventMouseButton or event is InputEventScreenTouch:
+	if (event is InputEventMouseButton and not is_emulated_mouse_pressed) or event is InputEventScreenTouch:
 		if event.is_pressed():
 			var viewport_size = get_viewport().size
 			var half_height = viewport_size.y / 2
@@ -57,7 +61,7 @@ func _input(event: InputEvent):
 		drag_distance = 0.0
 		is_mouse_pressed = event.is_pressed()
 
-	elif (event is InputEventMouseMotion or event is InputEventScreenDrag) and is_mouse_pressed:
+	elif ((event is InputEventMouseMotion and not is_emulated_mouse_pressed) or event is InputEventScreenDrag) and is_mouse_pressed:
 		drag_distance += event.screen_relative.length()
 		if drag_distance < DRAG_DEADZONE:
 			return
@@ -86,16 +90,20 @@ func get_mouse_collision():
 		return result.get("collider")
 
 func on_confirm_clicked():
+	ui_controller.select_solution(-1)
 	game.confirm()
+	scene_controller.start_confirm_animation(game.correct_index)
+
+func on_confirm_animation_end():
 	game.setup_round()
 	scene_controller.set_layouts(game.layout, game.solutions)
 	scene_controller.reset_scene()
-	select_solution(-1)
+	scene_controller.fadein_cubes()
 
 func select_solution(index: int):
 	game.selection_index = index
 	scene_controller.select_solution(index)
 	ui_controller.select_solution(index)
 
-func update_scores():
+func update_score():
 	$SubViewportContainer/SubViewport/Node/ScoreLabel3D.set_score(10.0 * game.score)

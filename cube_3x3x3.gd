@@ -74,6 +74,12 @@ func set_emission_intensity(ratio: float):
 		Color(emission.r * ratio, emission.g * ratio, emission.b * ratio, 1.0)
 	)
 
+## Overrides material alpha without changing color member (to be able to restore later).
+func set_alpha(alpha: float):
+	var c = Color(color)
+	c.a = alpha
+	material.set_shader_parameter("albedo", c)
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if not Engine.is_editor_hint():

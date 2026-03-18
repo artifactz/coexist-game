@@ -1,7 +1,5 @@
 class_name Game
 
-signal scores_updated
-
 var layout: Array = []
 var solutions: Array = []
 var correct_index = -1
@@ -49,6 +47,7 @@ func setup_round():
 
 	round_timestamp = Time.get_unix_time_from_system()
 
+## Updates score and difficulty state.
 func confirm():
 	var round_duration = Time.get_unix_time_from_system() - round_timestamp
 	var speed_bonus = exp(-0.1 * round_duration)
@@ -65,8 +64,6 @@ func confirm():
 		var difficulty_bump = 0.333 * correct_streak + speed_bonus
 		print("difficulty+: ", difficulty_bump)
 		difficulty = clamp(difficulty + difficulty_bump, 0.0, 30.0)
-
-		scores_updated.emit()
 
 	else:
 		n_wrong += 1
