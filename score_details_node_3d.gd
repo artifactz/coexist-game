@@ -70,3 +70,11 @@ func _animate(streakbonus: int, speedbonus: int):
 
 	tween2.tween_property(self, "position:y", DETAILS_PANEL_END_Y, 2.0) \
 		.set_custom_interpolator(transition)
+
+func _process(_delta: float) -> void:
+	_reset_padding()
+
+## Repositions based on portrait/landscape mode.
+func _reset_padding():
+	var viewport_size = get_viewport().size
+	position.x = -0.94 if viewport_size.y > viewport_size.x else -1.15

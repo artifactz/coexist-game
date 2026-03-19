@@ -14,6 +14,10 @@ func set_score(value: float) -> void:
 	score_t = 0.0
 
 func _process(delta: float) -> void:
+	_update_transition(delta)
+	_reset_padding()
+
+func _update_transition(delta: float) -> void:
 	if score_t == -1.0:
 		return
 
@@ -33,3 +37,8 @@ func _process(delta: float) -> void:
 
 func _update_text() -> void:
 	text = "Score: %d" % round(score)
+
+## Repositions based on portrait/landscape mode.
+func _reset_padding():
+	var viewport_size = get_viewport().size
+	position.x = -0.94 if viewport_size.y > viewport_size.x else -1.15
