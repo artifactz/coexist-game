@@ -13,6 +13,7 @@ const CUBE_THROW_SECONDS := 0.667
 
 signal confirm_finished
 signal score_update
+signal hearts_update
 
 static var CubeScene = preload("res://cube_3x3x3.tscn")
 
@@ -173,6 +174,9 @@ func start_confirm_animation(correct_index: int):
 			throw_rotation_velocity = CUBE_THROW_ROTATION_FORCE * rot_vel
 			throwing_timestamp = Time.get_unix_time_from_system()
 		)
+
+		# Signal that hearts can be updated now
+		tween.tween_callback(hearts_update.emit)
 
 func continue_after_throw_animation():
 	scene.create_tween().tween_method(solution_cubes[selection_index].set_alpha, solution_cubes[selection_index].color.a, 0.0, 0.5)

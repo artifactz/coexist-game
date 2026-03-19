@@ -26,6 +26,7 @@ func _ready() -> void:
 	)
 	scene_controller.confirm_finished.connect(on_confirm_animation_end)
 	scene_controller.score_update.connect(update_score)
+	scene_controller.hearts_update.connect(loose_heart)
 	scene_controller.set_layouts(game.layout, game.solutions)
 	scene_controller.fadein_cubes()
 
@@ -95,6 +96,9 @@ func on_confirm_clicked():
 	scene_controller.start_confirm_animation(game.correct_index)
 
 func on_confirm_animation_end():
+	if game.hearts == 0:
+		$SubViewportContainer/SubViewport/Node/GameOverLabel3D.visible = true
+		return
 	game.setup_round()
 	scene_controller.set_layouts(game.layout, game.solutions)
 	scene_controller.reset_scene()
@@ -108,3 +112,8 @@ func select_solution(index: int):
 func update_score():
 	$SubViewportContainer/SubViewport/Node/ScoreLabel3D.set_score(game.score)
 	$SubViewportContainer/SubViewport/Node/ScoreDetailsNode3D.show_score_details(game.score_details)
+
+func loose_heart():
+	$SubViewportContainer/SubViewport/Node/HeartsNode.loose_heart()
+	$UserInterface/HurtColorRect.start_hurt_animation()
+	game.hearts -= 1

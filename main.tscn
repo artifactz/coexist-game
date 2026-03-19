@@ -7,10 +7,12 @@
 [ext_resource type="Script" uid="uid://bas6u8db3gk3l" path="res://auto_aspect_camera3d.gd" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://dpnkracgibk1d" path="res://background_multi_mesh_instance_3d.gd" id="4_lquwl"]
 [ext_resource type="Theme" uid="uid://3fcptq23yvq" path="res://main_theme.tres" id="5_7mycd"]
+[ext_resource type="Script" uid="uid://drc1wg4byxhy3" path="res://hearts_node.gd" id="6_dg77c"]
 [ext_resource type="FontFile" uid="uid://ccifom0p3h2v3" path="res://media/Orbitron-Bold.ttf" id="6_kek77"]
 [ext_resource type="Script" uid="uid://c13cfvy1f1ome" path="res://score_label_3d.gd" id="7_4c57u"]
 [ext_resource type="Script" uid="uid://cal5b0dssaqfw" path="res://user_interface.gd" id="7_5vw27"]
 [ext_resource type="Script" uid="uid://cpaw1qaswp4wf" path="res://score_details_node_3d.gd" id="8_efxa6"]
+[ext_resource type="Script" uid="uid://kj18toh6hh2a" path="res://hurt_color_rect.gd" id="13_ycdy4"]
 
 [sub_resource type="Environment" id="Environment_0xm2m"]
 background_mode = 1
@@ -83,6 +85,13 @@ far = 400.0
 script = ExtResource("3_1bvp3")
 metadata/_custom_type_script = "uid://bas6u8db3gk3l"
 
+[node name="HeartsNode" type="Node3D" parent="SubViewportContainer/SubViewport/Node" unique_id=1438627333]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 1.4, 0)
+script = ExtResource("6_dg77c")
+num_hearts = 3
+heart_size = 0.15
+padding = 0.02
+
 [node name="ScoreLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node" unique_id=139525142]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 1.4, 0)
 pixel_size = 0.003
@@ -144,6 +153,14 @@ font = ExtResource("6_kek77")
 font_size = 42
 horizontal_alignment = 2
 
+[node name="GameOverLabel3D" type="Label3D" parent="SubViewportContainer/SubViewport/Node" unique_id=1698819739]
+visible = false
+pixel_size = 0.003
+modulate = Color(0.74509805, 0.15686275, 0.19607843, 1)
+text = "Game Over"
+font = ExtResource("6_kek77")
+font_size = 100
+
 [node name="UserInterface" type="Control" parent="." unique_id=1171349409]
 layout_mode = 3
 anchors_preset = 15
@@ -178,3 +195,14 @@ layout_mode = 2
 [node name="ConfirmButton" type="Button" parent="UserInterface/MarginContainer/VBoxContainer/CenterContainer" unique_id=1331409262]
 layout_mode = 2
 text = "Confirm"
+
+[node name="HurtColorRect" type="ColorRect" parent="UserInterface" unique_id=1016388130]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.74509805, 0.15686275, 0.19607843, 1)
+script = ExtResource("13_ycdy4")

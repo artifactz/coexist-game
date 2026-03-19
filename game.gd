@@ -8,6 +8,7 @@ var round_timestamp: float
 
 var difficulty := 0.0
 var score := 0
+var hearts := 3
 var score_details: ScoreDetails = null
 var n_correct := 0
 var n_wrong := 0
