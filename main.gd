@@ -51,11 +51,12 @@ func _input(event: InputEvent):
 	if (event is InputEventMouseButton and not is_emulated_mouse_pressed) or event is InputEventScreenTouch:
 		if event.is_pressed():
 			var viewport_size = get_viewport().size
-			var half_height = viewport_size.y / 2
+			var half_height = 0.52 * viewport_size.y
 			rotate_mode = RotateMode.MainCube if event.position.y < half_height else RotateMode.SolutionCubes
 		elif not is_mouse_dragged:
 			var collider = get_mouse_collision()
 			if collider and collider.is_in_group("selectable"):
+				$SelectAudioStreamPlayer.play()
 				select_solution(collider.solution_index)
 
 		is_mouse_dragged = false
@@ -91,12 +92,14 @@ func get_mouse_collision():
 		return result.get("collider")
 
 func on_confirm_clicked():
+	$ConfirmAudioStreamPlayer.play()
 	ui_controller.select_solution(-1)
 	game.confirm()
 	scene_controller.start_confirm_animation(game.correct_index)
 
 func on_confirm_animation_end():
 	if game.hearts == 0:
+		$SubViewportContainer/SubViewport/Node/GameOverAudioStreamPlayer.play()
 		$SubViewportContainer/SubViewport/Node/GameOverLabel3D.visible = true
 		return
 	game.setup_round()

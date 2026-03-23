@@ -11,6 +11,7 @@ class Pulse:
 	var end_z := -15.0
 	var duration := 2.0
 	var age := 0.0
+	var played_sound := false
 
 var material = preload("res://background_shader_material.tres")
 var mesh := BoxMesh.new()
@@ -46,6 +47,10 @@ func _update_pulses(delta: float) -> void:
 	var z = (1.0 - pulses[0].age) * pulses[0].start_z + pulses[0].age * pulses[0].end_z
 	material.set_shader_parameter("pulse_z", z)
 	pulses[0].age += delta
+
+	if not pulses[0].played_sound:
+		$PulseAudioStreamPlayer.play()
+		pulses[0].played_sound = true
 
 func _update_heartbeat(delta: float) -> void:
 	if heartbeat_time >= HEARTBEAT_INTERVAL_SECONDS:

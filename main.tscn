@@ -9,10 +9,18 @@
 [ext_resource type="Theme" uid="uid://3fcptq23yvq" path="res://main_theme.tres" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://drc1wg4byxhy3" path="res://hearts_node.gd" id="6_dg77c"]
 [ext_resource type="FontFile" uid="uid://ccifom0p3h2v3" path="res://media/Orbitron-Bold.ttf" id="6_kek77"]
+[ext_resource type="AudioStream" uid="uid://cm2v7huj16pw3" path="res://media/pulse.wav" id="6_w48qg"]
 [ext_resource type="Script" uid="uid://c13cfvy1f1ome" path="res://score_label_3d.gd" id="7_4c57u"]
 [ext_resource type="Script" uid="uid://cal5b0dssaqfw" path="res://user_interface.gd" id="7_5vw27"]
 [ext_resource type="Script" uid="uid://cpaw1qaswp4wf" path="res://score_details_node_3d.gd" id="8_efxa6"]
+[ext_resource type="AudioStream" uid="uid://boxc32fg7gnd3" path="res://media/slap.ogg" id="11_yaehf"]
+[ext_resource type="AudioStream" uid="uid://l5iknvljxsmi" path="res://media/lock_in_large.ogg" id="12_074og"]
+[ext_resource type="AudioStream" uid="uid://8k8vwku5bv7s" path="res://media/metal_hit.ogg" id="13_cegan"]
 [ext_resource type="Script" uid="uid://kj18toh6hh2a" path="res://hurt_color_rect.gd" id="13_ycdy4"]
+[ext_resource type="AudioStream" uid="uid://b4b8vu5kp7s3g" path="res://media/positive.ogg" id="14_82xsv"]
+[ext_resource type="AudioStream" uid="uid://cxplnxkw34lfr" path="res://media/negative.ogg" id="15_getpj"]
+[ext_resource type="AudioStream" uid="uid://dbr73kqld61yn" path="res://media/select.mp3" id="16_yaehf"]
+[ext_resource type="AudioStream" uid="uid://bdihegit638ne" path="res://media/confirm.mp3" id="17_074og"]
 
 [sub_resource type="Environment" id="Environment_0xm2m"]
 background_mode = 1
@@ -62,6 +70,11 @@ metadata/_custom_type_script = "uid://bas6u8db3gk3l"
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="SubViewportContainer/BackgroundSubViewport/Node" unique_id=55065394]
 script = ExtResource("4_lquwl")
+
+[node name="PulseAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/BackgroundSubViewport/Node/MultiMeshInstance3D" unique_id=846501085]
+stream = ExtResource("6_w48qg")
+volume_db = -5.474
+pitch_scale = 0.8
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=372436183]
 own_world_3d = true
@@ -161,6 +174,25 @@ text = "Game Over"
 font = ExtResource("6_kek77")
 font_size = 100
 
+[node name="CorrectAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=482670039]
+stream = ExtResource("12_074og")
+volume_db = -10.947
+
+[node name="IncorrectAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=314378852]
+stream = ExtResource("11_yaehf")
+volume_db = -5.474
+
+[node name="GameOverAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=687854841]
+stream = ExtResource("13_cegan")
+volume_db = -6.0
+
+[node name="ScoreAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=766373643]
+stream = ExtResource("14_82xsv")
+volume_db = -0.913
+
+[node name="NoScoreAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=383394452]
+stream = ExtResource("15_getpj")
+
 [node name="UserInterface" type="Control" parent="." unique_id=1171349409]
 layout_mode = 3
 anchors_preset = 15
@@ -206,3 +238,12 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.74509805, 0.15686275, 0.19607843, 1)
 script = ExtResource("13_ycdy4")
+
+[node name="SelectAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=2080897169]
+stream = ExtResource("16_yaehf")
+volume_db = 2.0
+
+[node name="ConfirmAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=450777488]
+stream = ExtResource("17_074og")
+volume_db = 2.0
+pitch_scale = 0.9

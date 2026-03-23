@@ -11,7 +11,7 @@ static var material_template = preload("res://cube_shader_material.tres")
 var color = Color("#FF00FFDA")
 var emission = Color("#000000FF")
 var solution_index = -1
-var root: Node3D = self  # changes to ClickableSolution (StaticBody3D) if selectable
+var root: Node3D  # ClickableSolution (StaticBody3D) if selectable, Node3D otherwise
 var material: ShaderMaterial
 
 
@@ -22,10 +22,15 @@ func _refresh(_value):
 func _generate():
 	# Clear scene
 	for c in get_children():
-		c.queue_free()
+		if not c.get_class() == "AudioStreamPlayer":
+			c.queue_free()
 
-	# Create collision parent and collider shape
-	if solution_index > -1:
+	if solution_index == -1:
+		# Create regular node to contain subcubes
+		root = Node3D.new()
+		add_child(root)
+	else:
+		# Create collision parent and collider shape
 		root = ClickableSolution.new(solution_index)
 		add_child(root)
 
@@ -85,6 +90,26 @@ func _ready() -> void:
 	if not Engine.is_editor_hint():
 		_generate()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+## Starts transition animation.
+func fly_in() -> void:
+	var tween = get_tree().create_tween()
+	tween.set_parallel()
+	var subcubes = root.get_children()
+	for i in subcubes.size():
+		var c = subcubes[i]
+		if not c.visible:
+			continue
+		var x = c.position.x
+		c.position.x = 30.0 * _random_sign(x) + 10.0 * randf() - 5.0
+		tween.tween_property(c, "position:x", x, 0.5).set_custom_interpolator(
+			func (x): return sqrt(x)
+		).set_delay(0.05 * i)
+		tween.tween_callback($AudioStreamPlayer.play).set_delay(0.05 * i + 0.5)
+
+## Sign function, but returns a random sign at 0.
+func _random_sign(value: float) -> float:
+	if value < 0.0:
+		return -1.0
+	if value > 0.0:
+		return 1.0
+	return -1.0 if randf() < 0.5 else 1.0

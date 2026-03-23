@@ -24,6 +24,10 @@ var background_multimesh: BackgroundMultiMeshInstance3D
 var main_cube: Cube3x3x3 = null
 var solution_cubes: Array[Cube3x3x3] = []  ## Solution slots.
 var solution_positions: Array[Vector3] = []
+var correct_sound: AudioStreamPlayer
+var incorrect_sound: AudioStreamPlayer
+var score_sound: AudioStreamPlayer
+var no_score_sound: AudioStreamPlayer
 
 enum TransitionDirection { Activating, Deactivating }
 var selection_lights: Array[SpotLight3D] = []  ## Selection spotlight per slot.
@@ -38,14 +42,13 @@ var throw_rotation_velocity := Vector3()
 
 func _init(scene: Node3D, background_scene: BackgroundNode3D):
 	self.scene = scene
-	var nodes = scene.get_children()
-	var i = nodes.find_custom((func (node: Node3D): return node.get_class() == "Camera3D"))
-	self.camera = nodes[i]
-
+	camera = scene.get_node("Camera3D")
+	correct_sound = scene.get_node("CorrectAudioStreamPlayer")
+	incorrect_sound = scene.get_node("IncorrectAudioStreamPlayer")
+	score_sound = scene.get_node("ScoreAudioStreamPlayer")
+	no_score_sound = scene.get_node("NoScoreAudioStreamPlayer")
 	self.background_scene = background_scene
-	nodes = background_scene.get_children()
-	i = nodes.find_custom((func (node: Node3D): return node.get_class() == "MultiMeshInstance3D"))
-	self.background_multimesh = nodes[i]
+	background_multimesh = background_scene.get_node("MultiMeshInstance3D")
 
 	_setup_scene()
 	reset_scene()
@@ -140,6 +143,8 @@ func start_confirm_animation(correct_index: int):
 		# Slide selected cube into position to reveal that solution is correct
 		tween.tween_property(solution_cubes[selection_index], "transform", main_cube.transform, 0.28).set_trans(Tween.TRANS_CIRC).set_delay(0.075)
 
+		tween.tween_callback(correct_sound.play)
+
 		# Fade out incorrect solutions
 		tween.set_parallel()
 		for i in 3:
@@ -149,6 +154,7 @@ func start_confirm_animation(correct_index: int):
 
 		# Signal that score can be updated now
 		tween.tween_callback(score_update.emit)
+		tween.tween_callback(score_sound.play).set_delay(0.1)
 
 		# Fade out main cube and correct solution cube
 		tween.set_parallel(false)
@@ -173,7 +179,10 @@ func start_confirm_animation(correct_index: int):
 			throw_velocity = CUBE_THROW_FORCE * vel
 			throw_rotation_velocity = CUBE_THROW_ROTATION_FORCE * rot_vel
 			throwing_timestamp = Time.get_unix_time_from_system()
+
+			incorrect_sound.play()
 		)
+		tween.tween_callback(no_score_sound.play).set_delay(0.1)
 
 		# Signal that hearts can be updated now
 		tween.tween_callback(hearts_update.emit)
@@ -205,6 +214,7 @@ static func _get_remaining_index(a: int, b: int) -> int:
 	return 0
 
 func fadein_cubes():
+	main_cube.fly_in()
 	var tween = scene.create_tween()
 	tween.set_parallel()
 	tween.tween_method(main_cube.set_alpha, 0.0, main_cube.color.a, 0.5)
