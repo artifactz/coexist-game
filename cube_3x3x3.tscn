@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://brmkytwkw6td1" path="res://cube_3x3x3.gd" id="1_5oapa"]
 [ext_resource type="AudioStream" uid="uid://dapldqcnhn1ek" path="res://media/lock_in_small.wav" id="2_ydmvb"]
+[ext_resource type="Script" uid="uid://cjmm63fu6v8gi" path="res://restorable_audio_stream_player.gd" id="3_crcv1"]
 
 [node name="Cube3x3x3" type="Node3D" unique_id=127168478]
 script = ExtResource("1_5oapa")
@@ -10,3 +11,4 @@ sub_cube_size = 0.315
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1082627938]
 stream = ExtResource("2_ydmvb")
 volume_db = -20.07
+script = ExtResource("3_crcv1")

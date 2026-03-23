@@ -92,6 +92,8 @@ func _ready() -> void:
 
 ## Starts transition animation.
 func fly_in() -> void:
+	$AudioStreamPlayer.restore()
+
 	var tween = get_tree().create_tween()
 	tween.set_parallel()
 	var subcubes = root.get_children()

@@ -12,6 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://cm2v7huj16pw3" path="res://media/pulse.wav" id="6_w48qg"]
 [ext_resource type="Script" uid="uid://c13cfvy1f1ome" path="res://score_label_3d.gd" id="7_4c57u"]
 [ext_resource type="Script" uid="uid://cal5b0dssaqfw" path="res://user_interface.gd" id="7_5vw27"]
+[ext_resource type="Script" uid="uid://cjmm63fu6v8gi" path="res://restorable_audio_stream_player.gd" id="7_ryguw"]
 [ext_resource type="Script" uid="uid://cpaw1qaswp4wf" path="res://score_details_node_3d.gd" id="8_efxa6"]
 [ext_resource type="AudioStream" uid="uid://boxc32fg7gnd3" path="res://media/slap.ogg" id="11_yaehf"]
 [ext_resource type="AudioStream" uid="uid://l5iknvljxsmi" path="res://media/lock_in_large.ogg" id="12_074og"]
@@ -75,6 +76,8 @@ script = ExtResource("4_lquwl")
 stream = ExtResource("6_w48qg")
 volume_db = -5.474
 pitch_scale = 0.8
+script = ExtResource("7_ryguw")
+metadata/_custom_type_script = "uid://cjmm63fu6v8gi"
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=372436183]
 own_world_3d = true
@@ -177,21 +180,31 @@ font_size = 100
 [node name="CorrectAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=482670039]
 stream = ExtResource("12_074og")
 volume_db = -10.947
+script = ExtResource("7_ryguw")
+metadata/_custom_type_script = "uid://cjmm63fu6v8gi"
 
 [node name="IncorrectAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=314378852]
 stream = ExtResource("11_yaehf")
 volume_db = -5.474
+script = ExtResource("7_ryguw")
+metadata/_custom_type_script = "uid://cjmm63fu6v8gi"
 
 [node name="GameOverAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=687854841]
 stream = ExtResource("13_cegan")
 volume_db = -6.0
+script = ExtResource("7_ryguw")
+metadata/_custom_type_script = "uid://cjmm63fu6v8gi"
 
 [node name="ScoreAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=766373643]
 stream = ExtResource("14_82xsv")
 volume_db = -0.913
+script = ExtResource("7_ryguw")
+metadata/_custom_type_script = "uid://cjmm63fu6v8gi"
 
 [node name="NoScoreAudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node" unique_id=383394452]
 stream = ExtResource("15_getpj")
+script = ExtResource("7_ryguw")
+metadata/_custom_type_script = "uid://cjmm63fu6v8gi"
 
 [node name="UserInterface" type="Control" parent="." unique_id=1171349409]
 layout_mode = 3
@@ -242,8 +255,12 @@ script = ExtResource("13_ycdy4")
 [node name="SelectAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=2080897169]
 stream = ExtResource("16_yaehf")
 volume_db = 2.0
+script = ExtResource("7_ryguw")
+metadata/_custom_type_script = "uid://cjmm63fu6v8gi"
 
 [node name="ConfirmAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=450777488]
 stream = ExtResource("17_074og")
 volume_db = 2.0
 pitch_scale = 0.9
+script = ExtResource("7_ryguw")
+metadata/_custom_type_script = "uid://cjmm63fu6v8gi"

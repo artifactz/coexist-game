@@ -24,10 +24,10 @@ var background_multimesh: BackgroundMultiMeshInstance3D
 var main_cube: Cube3x3x3 = null
 var solution_cubes: Array[Cube3x3x3] = []  ## Solution slots.
 var solution_positions: Array[Vector3] = []
-var correct_sound: AudioStreamPlayer
-var incorrect_sound: AudioStreamPlayer
-var score_sound: AudioStreamPlayer
-var no_score_sound: AudioStreamPlayer
+var correct_sound: RestorableAudioStreamPlayer
+var incorrect_sound: RestorableAudioStreamPlayer
+var score_sound: RestorableAudioStreamPlayer
+var no_score_sound: RestorableAudioStreamPlayer
 
 enum TransitionDirection { Activating, Deactivating }
 var selection_lights: Array[SpotLight3D] = []  ## Selection spotlight per slot.
